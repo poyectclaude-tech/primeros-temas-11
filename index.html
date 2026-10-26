@@ -1,0 +1,730 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Actividad Python 11°</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=DM+Sans:ital,wght@0,300;0,500;0,700;1,300&display=swap">
+
+<style>
+:root {
+  --bg:#0f1117;--bg2:#1a1d27;--bg3:#22263a;--line:#2e3350;
+  --fg:#e2e8f8;--fg2:#8892b0;--fg3:#4a5280;
+  --accent:#64ffda;--kw:#c792ea;--str:#c3e88d;--num:#f78c6c;--fn:#82aaff;--cmt:#546e7a;
+  --good:#22c55e;--bad:#f43f5e;--warn:#f59e0b;--r:8px;
+  --mono:'JetBrains Mono','Courier New',monospace;
+  --body:'DM Sans',system-ui,sans-serif;
+  color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:15px;line-height:1.65;
+  padding-left:max(16px,env(safe-area-inset-left,0px));
+  padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0}
+
+/* TOPBAR */
+.topbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:100;background:var(--bg);
+  border-bottom:1px solid var(--line);padding:0 max(24px,env(safe-area-inset-left,0px));
+  display:flex;align-items:center;justify-content:space-between;height:54px;gap:12px}
+.topbar::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:10}
+.logo{font-family:var(--mono);font-size:13px;color:var(--accent);display:flex;gap:8px;align-items:center}
+.logo span{color:var(--fg2)}
+.steps-mini{display:flex;gap:6px;align-items:center}
+.step-dot{width:28px;height:28px;border-radius:50%;border:2px solid var(--line);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-size:11px;font-weight:700;color:var(--fg3);transition:all .25s}
+.step-dot.done{background:var(--good);border-color:var(--good);color:var(--bg)}
+.step-dot.active{background:var(--accent);border-color:var(--accent);color:var(--bg)}
+.step-line{width:18px;height:2px;background:var(--line)}
+.step-line.done{background:var(--good)}
+
+/* MAIN */
+.main{max-width:860px;margin:0 auto;padding-block:36px 80px}
+.page{display:none}.page.active{display:block}
+
+/* LEER */
+.read-section{background:var(--bg2);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;margin-bottom:18px}
+.read-header{background:var(--bg3);padding:12px 20px;display:flex;align-items:center;gap:10px;
+  border-bottom:1px solid var(--line);cursor:pointer;user-select:none}
+.read-header h3{font-size:15px;font-weight:700;flex:1}
+.badge{font-family:var(--mono);font-size:11px;padding:3px 9px;border-radius:3px;
+  background:var(--bg);border:1px solid var(--line);color:var(--fn)}
+.rtog{color:var(--fg3);font-size:18px;transition:transform .2s}
+.read-body{padding:22px;line-height:1.8;display:none}
+.read-body p{color:var(--fg2);margin-bottom:12px}
+.read-body p:last-child{margin-bottom:0}
+.read-body strong{color:var(--fg)}
+.read-body em{color:var(--accent);font-style:normal;font-family:var(--mono);font-size:13px}
+
+/* pilares */
+.pilares{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:16px 0}
+.pilar{background:var(--bg3);border:1px solid var(--line);border-radius:var(--r);padding:14px;transition:border-color .2s}
+.pilar:hover{border-color:var(--accent)}
+.pilar .pn{font-family:var(--mono);font-size:26px;font-weight:700;color:var(--line);line-height:1;margin-bottom:6px}
+.pilar:hover .pn{color:var(--accent)}
+.pilar h4{font-size:13px;font-weight:700;margin-bottom:4px}
+.pilar p{font-size:12px;color:var(--fg2);margin:0}
+
+/* code */
+.cb{background:var(--bg3);border:1px solid var(--line);border-radius:6px;overflow:hidden;margin:14px 0}
+.cb-bar{background:var(--bg);padding:6px 14px;font-family:var(--mono);font-size:11px;color:var(--fn);border-bottom:1px solid var(--line)}
+.cb-body{padding:14px 18px;font-family:var(--mono);font-size:13px;line-height:1.9;overflow-x:auto}
+.kw{color:var(--kw)}.str{color:var(--str)}.num{color:var(--num)}.fn{color:var(--fn)}.cmt{color:var(--cmt);font-style:italic}.out{color:var(--accent)}
+
+/* tabla */
+.dt{width:100%;border-collapse:collapse;margin:14px 0;font-size:14px}
+.dt th{background:var(--bg);color:var(--fg2);font-family:var(--mono);font-size:11px;
+  letter-spacing:.07em;text-transform:uppercase;padding:8px 12px;border-bottom:1px solid var(--line);text-align:left}
+.dt td{padding:8px 12px;border-bottom:1px solid var(--line);vertical-align:middle}
+.dt tr:last-child td{border:none}.dt tr:hover td{background:var(--bg2)}
+.chip{display:inline-block;padding:2px 8px;border-radius:3px;font-family:var(--mono);font-size:12px;font-weight:700}
+.chip.kw{background:#3d2452;color:var(--kw)}.chip.str{background:#243929;color:var(--str)}
+.chip.num{background:#3c2a1a;color:var(--num)}.chip.fn{background:#1d2d4a;color:var(--fn)}
+
+/* prog */
+.prog-wrap{margin-bottom:28px}
+.prog-label{font-family:var(--mono);font-size:11px;color:var(--fg2);margin-bottom:6px;display:flex;justify-content:space-between}
+.prog-bar{height:3px;background:var(--bg3);border-radius:2px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,#7c3aed,var(--accent));border-radius:2px;transition:width .35s ease}
+
+/* ejercicios */
+.ej-card{background:var(--bg2);border:1px solid var(--line);border-radius:var(--r);padding:22px;margin-bottom:16px}
+.ej-num{font-family:var(--mono);font-size:11px;color:var(--accent);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px}
+.ej-card h3{font-size:15px;font-weight:700;margin-bottom:10px;line-height:1.4}
+.ej-card p{color:var(--fg2);font-size:14px;margin-bottom:14px;line-height:1.75}
+textarea,input[type=text],select{width:100%;background:var(--bg3);border:1px solid var(--line);
+  border-radius:6px;color:var(--fg);font-family:var(--mono);font-size:13px;padding:10px 14px;resize:vertical;outline:none;transition:border-color .15s}
+textarea:focus,input[type=text]:focus,select:focus{border-color:var(--accent)}
+select{cursor:pointer}option{background:var(--bg3)}
+.hint{background:var(--bg3);border:1px solid var(--fn);border-radius:6px;padding:10px 14px;font-size:13px;color:var(--fn);margin-bottom:12px;display:none}
+.hint.show{display:block}
+.ver-pista{background:none;border:1px solid var(--line);color:var(--fg2);padding:4px 12px;border-radius:4px;
+  font-family:var(--mono);font-size:11px;cursor:pointer;margin-bottom:10px;transition:border-color .15s}
+.ver-pista:hover{border-color:var(--fn);color:var(--fn)}
+.fb{margin-top:10px;padding:9px 14px;border-radius:6px;font-size:13px;display:none;line-height:1.55}
+.fb.show{display:block}.fb.ok{background:#052e16;border:1px solid var(--good);color:#86efac}
+.fb.no{background:#2d0b14;border:1px solid var(--bad);color:#fca5a5}
+.fb.tip{background:#1c1501;border:1px solid var(--warn);color:#fcd34d}
+
+/* quiz */
+.qcard{background:var(--bg2);border:1px solid var(--line);border-radius:var(--r);padding:22px;margin-bottom:16px}
+.qnum{font-family:var(--mono);font-size:11px;color:var(--accent);margin-bottom:8px}
+.qtxt{font-size:15px;font-weight:500;margin-bottom:14px;line-height:1.5}
+.qtxt code{font-family:var(--mono);background:var(--bg3);padding:2px 7px;border-radius:4px;color:var(--fn)}
+.opts{display:flex;flex-direction:column;gap:7px}
+.opt{display:flex;align-items:flex-start;gap:10px;padding:9px 14px;border-radius:6px;
+  border:1px solid var(--line);cursor:pointer;font-size:14px;line-height:1.5;transition:border-color .15s,background .15s}
+.opt:hover{border-color:var(--accent);background:var(--bg3)}
+.opt.correct{border-color:var(--good);background:#052e16;color:var(--good);pointer-events:none}
+.opt.wrong{border-color:var(--bad);background:#2d0b14;color:var(--bad);pointer-events:none}
+.ol{width:22px;height:22px;border-radius:50%;background:var(--bg3);border:1px solid var(--line);
+  display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10px;font-weight:700;flex-shrink:0;margin-top:1px}
+.opt.correct .ol{background:var(--good);color:var(--bg);border-color:var(--good)}
+.opt.wrong .ol{background:var(--bad);color:var(--bg);border-color:var(--bad)}
+.qfb{margin-top:10px;padding:9px 14px;border-radius:6px;font-size:13px;line-height:1.6;display:none}
+.qfb.show{display:block}.qfb.ok{background:#052e16;border:1px solid var(--good);color:#86efac}
+.qfb.no{background:#2d0b14;border:1px solid var(--bad);color:#fca5a5}
+
+/* entrega */
+.anti-ia{background:#1c1501;border:1px solid var(--warn);border-radius:var(--r);padding:18px 22px;margin-bottom:20px}
+.anti-ia h4{color:var(--warn);font-size:14px;font-weight:700;margin-bottom:10px}
+.anti-ia ul{color:#fcd34d;font-size:13px;padding-left:18px;line-height:2.1}
+.campo{margin-bottom:16px}
+.campo label{display:block;font-size:13px;color:var(--fg2);margin-bottom:6px;font-family:var(--mono)}
+.campo label span{color:var(--bad)}
+.info-box{background:var(--bg2);border:1px solid var(--accent);border-radius:var(--r);padding:22px;margin-bottom:20px}
+.info-box h3{font-size:16px;font-weight:700;margin-bottom:10px;color:var(--accent)}
+.info-box p{color:var(--fg2);font-size:14px;margin-bottom:8px;line-height:1.75}
+.resumen-c{background:var(--bg2);border:1px solid var(--line);border-radius:var(--r);padding:22px;margin-bottom:14px}
+.resumen-c h4{font-size:13px;font-family:var(--mono);color:var(--fn);margin-bottom:10px}
+.resumen-c pre{background:var(--bg3);border:1px solid var(--line);border-radius:6px;
+  padding:12px 16px;font-size:12px;line-height:1.8;overflow-x:auto;color:var(--fg2)}
+.score-hero{text-align:center;padding:28px 0 20px}
+.score-num{font-family:var(--mono);font-size:60px;font-weight:700;color:var(--accent);line-height:1}
+.score-sub{color:var(--fg2);font-size:14px;margin-top:8px}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;gap:8px;padding:11px 24px;border-radius:6px;border:none;cursor:pointer;
+  font-family:var(--mono);font-size:13px;font-weight:700;transition:opacity .15s,transform .1s}
+.btn:hover{opacity:.85;transform:translateY(-1px)}.btn:disabled{opacity:.4;pointer-events:none}
+.btn-p{background:var(--accent);color:var(--bg)}.btn-g{background:var(--bg3);color:var(--fg);border:1px solid var(--line)}
+.brow{display:flex;gap:12px;flex-wrap:wrap;margin-top:18px}
+
+/* headings */
+.slabel{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:6px}
+.stitle{font-size:clamp(20px,3vw,28px);font-weight:700;line-height:1.2;margin-bottom:14px;text-wrap:balance}
+.sbody{color:var(--fg2);font-weight:300;line-height:1.8;margin-bottom:28px}
+
+@media(max-width:600px){
+  .main{padding-block:20px 60px}
+  .pilares{grid-template-columns:1fr 1fr}
+  .step-line{width:10px}
+  .step-dot{width:24px;height:24px;font-size:10px}
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:0s!important;transition-duration:0s!important}}
+</style>
+
+<header class="topbar">
+  <div class="logo"><span>&gt;&gt;&gt;</span><strong>python@JFK</strong><span>11°·P4</span></div>
+  <div class="steps-mini">
+    <div class="step-dot active" id="sd1">1</div><div class="step-line" id="sl1"></div>
+    <div class="step-dot" id="sd2">2</div><div class="step-line" id="sl2"></div>
+    <div class="step-dot" id="sd3">3</div><div class="step-line" id="sl3"></div>
+    <div class="step-dot" id="sd4">4</div>
+  </div>
+</header>
+
+<main class="main">
+
+<!-- ═══ PASO 1 — LEER ═══ -->
+<div class="page active" id="p1">
+  <p class="slabel">Paso 1 de 4 — Lectura</p>
+  <h1 class="stitle">Lee primero, practica después</h1>
+  <p class="sbody">Lee cada sección con atención. Las secciones se desbloquean en orden. Cuando termines cada una, pulsa "Entendido" para avanzar.</p>
+
+  <div class="prog-wrap">
+    <div class="prog-label"><span>Secciones leídas</span><span id="rdPct">0 / 3</span></div>
+    <div class="prog-bar"><div class="prog-fill" id="rdBar" style="width:0%"></div></div>
+  </div>
+
+  <!-- Sección 1 -->
+  <div class="read-section" id="rs1">
+    <div class="read-header" onclick="openSec(1)">
+      <h3>Tema 1 — Pensamiento computacional y Python</h3>
+      <span class="badge">Clase 1</span><span class="rtog" id="rt1">▾</span>
+    </div>
+    <div class="read-body" id="rb1">
+      <p>El <strong>pensamiento computacional</strong> es una forma de resolver problemas de manera ordenada y lógica. Se basa en cuatro pilares:</p>
+      <div class="pilares">
+        <div class="pilar"><div class="pn">01</div><h4>Descomposición</h4><p>Dividir el problema en partes más pequeñas.</p></div>
+        <div class="pilar"><div class="pn">02</div><h4>Patrones</h4><p>Identificar repeticiones y similitudes.</p></div>
+        <div class="pilar"><div class="pn">03</div><h4>Abstracción</h4><p>Quedarse con lo esencial, ignorar lo demás.</p></div>
+        <div class="pilar"><div class="pn">04</div><h4>Algoritmos</h4><p>Instrucciones paso a paso hacia la solución.</p></div>
+      </div>
+      <p><strong>Python</strong> es el lenguaje de programación más popular del mundo. Es <em>open source</em>, gratuito, y funciona en Windows, Mac y Linux. Su sintaxis es tan clara que parece inglés.</p>
+      <div class="cb">
+        <div class="cb-bar">primer_programa.py</div>
+        <div class="cb-body">
+          <span class="cmt"># Este es un comentario — Python lo ignora</span><br>
+          <span class="fn">print</span>(<span class="str">"Hola, soy estudiante de 11° del JFK"</span>)<br>
+          <br>
+          <span class="cmt"># Practica gratis en: replit.com o trinket.io</span>
+        </div>
+      </div>
+      <p>La función <em>print()</em> muestra texto en pantalla. Lo que va entre comillas es texto — Python lo llama <em>str</em>.</p>
+      <div class="brow"><button class="btn btn-p" onclick="markRead(1)">✓ Entendido — desbloquear siguiente sección</button></div>
+    </div>
+  </div>
+
+  <!-- Sección 2 (bloqueada) -->
+  <div class="read-section" id="rs2" style="opacity:.35;pointer-events:none">
+    <div class="read-header" onclick="openSec(2)">
+      <h3>Tema 2 — Variables y tipos de datos</h3>
+      <span class="badge">Clase 2</span><span class="rtog" id="rt2">▸</span>
+    </div>
+    <div class="read-body" id="rb2">
+      <p>Una <strong>variable</strong> es un espacio en la memoria donde guardamos un dato. Tiene un nombre que elegimos y puede cambiar durante el programa.</p>
+      <div class="cb">
+        <div class="cb-bar">variables.py</div>
+        <div class="cb-body">
+          <span class="kw">nombre</span>   = <span class="str">"Kevin"</span>         <span class="cmt"># str — texto</span><br>
+          <span class="kw">edad</span>     = <span class="num">17</span>            <span class="cmt"># int — entero</span><br>
+          <span class="kw">nota</span>     = <span class="num">4.5</span>           <span class="cmt"># float — decimal</span><br>
+          <span class="kw">aprobado</span> = <span class="kw">True</span>          <span class="cmt"># bool — lógico</span><br>
+          <span class="kw">materias</span> = [<span class="str">"Mat"</span>,<span class="str">"Tec"</span>]  <span class="cmt"># list — lista</span>
+        </div>
+      </div>
+      <table class="dt">
+        <thead><tr><th>Tipo</th><th>Python</th><th>Ejemplo</th><th>Uso</th></tr></thead>
+        <tbody>
+          <tr><td>Texto</td><td><span class="chip str">str</span></td><td><code style="font-family:var(--mono);color:var(--str)">"Colombia"</code></td><td style="color:var(--fg2)">Nombres, mensajes</td></tr>
+          <tr><td>Entero</td><td><span class="chip num">int</span></td><td><code style="font-family:var(--mono);color:var(--num)">42</code></td><td style="color:var(--fg2)">Edades, cantidades</td></tr>
+          <tr><td>Decimal</td><td><span class="chip num">float</span></td><td><code style="font-family:var(--mono);color:var(--num)">4.5</code></td><td style="color:var(--fg2)">Notas, precios</td></tr>
+          <tr><td>Lógico</td><td><span class="chip kw">bool</span></td><td><code style="font-family:var(--mono);color:var(--kw)">True / False</code></td><td style="color:var(--fg2)">Condiciones</td></tr>
+          <tr><td>Lista</td><td><span class="chip fn">list</span></td><td><code style="font-family:var(--mono);color:var(--fn)">[1,2,3]</code></td><td style="color:var(--fg2)">Colecciones</td></tr>
+        </tbody>
+      </table>
+      <p><strong>Reglas de nombres:</strong> deben empezar con letra o <em>_</em>, sin espacios, y no pueden ser palabras reservadas de Python como <em>for</em>, <em>if</em>, <em>print</em>.</p>
+      <div class="brow"><button class="btn btn-p" onclick="markRead(2)">✓ Entendido — desbloquear siguiente sección</button></div>
+    </div>
+  </div>
+
+  <!-- Sección 3 (bloqueada) -->
+  <div class="read-section" id="rs3" style="opacity:.35;pointer-events:none">
+    <div class="read-header" onclick="openSec(3)">
+      <h3>Tema 3 — Operadores en Python</h3>
+      <span class="badge">Clase 2</span><span class="rtog" id="rt3">▸</span>
+    </div>
+    <div class="read-body" id="rb3">
+      <p>Los <strong>operadores</strong> son símbolos para realizar cálculos o comparaciones sobre variables y valores.</p>
+      <table class="dt">
+        <thead><tr><th>Tipo</th><th>Operadores</th><th>Ejemplo</th><th>Resultado</th></tr></thead>
+        <tbody>
+          <tr><td>Aritméticos</td><td><code style="font-family:var(--mono)">+ - * / // % **</code></td><td><code style="font-family:var(--mono)">10 % 3</code></td><td style="color:var(--num)">1</td></tr>
+          <tr><td>Comparación</td><td><code style="font-family:var(--mono)">== != &gt; &lt; &gt;= &lt;=</code></td><td><code style="font-family:var(--mono)">5 &gt; 3</code></td><td style="color:var(--kw)">True</td></tr>
+          <tr><td>Lógicos</td><td><code style="font-family:var(--mono)">and  or  not</code></td><td><code style="font-family:var(--mono)">True and False</code></td><td style="color:var(--kw)">False</td></tr>
+          <tr><td>Asignación</td><td><code style="font-family:var(--mono)">= += -= *=</code></td><td><code style="font-family:var(--mono)">x += 1</code></td><td style="color:var(--fg2)">x = x+1</td></tr>
+        </tbody>
+      </table>
+      <div class="cb">
+        <div class="cb-bar">operadores.py</div>
+        <div class="cb-body">
+          <span class="fn">print</span>(<span class="num">10</span> + <span class="num">3</span> * <span class="num">2</span>)   <span class="cmt"># → 16 (primero * luego +)</span><br>
+          <span class="fn">print</span>(<span class="num">2</span> ** <span class="num">8</span>)       <span class="cmt"># → 256 (potencia)</span><br>
+          <span class="fn">print</span>(<span class="num">15</span> // <span class="num">4</span>)     <span class="cmt"># → 3  (división entera)</span><br>
+          <span class="fn">print</span>(<span class="num">15</span> % <span class="num">4</span>)      <span class="cmt"># → 3  (residuo)</span>
+        </div>
+      </div>
+      <div class="brow"><button class="btn btn-p" onclick="markRead(3)">✓ Entendido — ir a ejercicios</button></div>
+    </div>
+  </div>
+
+  <div id="p1btn" style="display:none" class="brow">
+    <button class="btn btn-p" onclick="goTo(2)">Ir a los ejercicios →</button>
+  </div>
+</div>
+
+<!-- ═══ PASO 2 — EJERCICIOS ═══ -->
+<div class="page" id="p2">
+  <p class="slabel">Paso 2 de 4 — Ejercicios prácticos</p>
+  <h1 class="stitle">Practica con lo que leíste</h1>
+  <p class="sbody">Responde con <strong style="color:var(--warn)">tus propias palabras</strong>. Cada respuesta debe ser tuya — sin copiar de internet ni usar IA.</p>
+
+  <div class="ej-card">
+    <div class="ej-num">Ejercicio 1</div>
+    <h3>¿Qué es el pensamiento computacional? Explícalo con tus palabras</h3>
+    <p>Escribe al menos 2 oraciones propias. No copies el texto del material — exprésalo como si se lo explicaras a un amigo.</p>
+    <button class="ver-pista" onclick="toggleH('h1')">Ver pista</button>
+    <div class="hint" id="h1">Piensa en los 4 pilares. ¿Cómo los usarías para resolver algo cotidiano, como organizar el receso o el horario del colegio?</div>
+    <textarea id="e1" rows="3" placeholder="Escribe aquí tu respuesta..."></textarea>
+    <div class="fb" id="fb1"></div>
+  </div>
+
+  <div class="ej-card">
+    <div class="ej-num">Ejercicio 2</div>
+    <h3>¿Qué tipo de dato tiene cada variable?</h3>
+    <p>Elige entre: <code style="font-family:var(--mono);color:var(--fn)">str  int  float  bool  list</code></p>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:center">
+        <code style="font-family:var(--mono);color:var(--str)">ciudad = "Bogotá"</code>
+        <select id="e2a"><option value="">-- Tipo --</option><option>str</option><option>int</option><option>float</option><option>bool</option><option>list</option></select>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:center">
+        <code style="font-family:var(--mono);color:var(--num)">temperatura = 36.6</code>
+        <select id="e2b"><option value="">-- Tipo --</option><option>str</option><option>int</option><option>float</option><option>bool</option><option>list</option></select>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:center">
+        <code style="font-family:var(--mono);color:var(--num)">alumnos = 30</code>
+        <select id="e2c"><option value="">-- Tipo --</option><option>str</option><option>int</option><option>float</option><option>bool</option><option>list</option></select>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:center">
+        <code style="font-family:var(--mono);color:var(--kw)">aprobado = False</code>
+        <select id="e2d"><option value="">-- Tipo --</option><option>str</option><option>int</option><option>float</option><option>bool</option><option>list</option></select>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:center">
+        <code style="font-family:var(--mono);color:var(--fn)">notas = [4.5, 3.8, 4.2]</code>
+        <select id="e2e"><option value="">-- Tipo --</option><option>str</option><option>int</option><option>float</option><option>bool</option><option>list</option></select>
+      </div>
+    </div>
+    <div class="brow"><button class="btn btn-g" onclick="checkE2()">Verificar</button></div>
+    <div class="fb" id="fb2"></div>
+  </div>
+
+  <div class="ej-card">
+    <div class="ej-num">Ejercicio 3</div>
+    <h3>Encuentra y corrige los 3 errores en este código</h3>
+    <p>Escribe las líneas corregidas en el campo de texto y explica brevemente qué estaba mal en cada una.</p>
+    <div class="cb">
+      <div class="cb-bar">codigo_con_errores.py</div>
+      <div class="cb-body">
+        <span style="color:var(--bad)">1nombre</span> = <span class="str">"Ana"</span><br>
+        <span class="kw">nota final</span> = <span class="num">4.5</span><br>
+        <span class="fn">print</span>(<span class="kw">Nombre</span>)
+      </div>
+    </div>
+    <button class="ver-pista" onclick="toggleH('h3')">Ver pista</button>
+    <div class="hint" id="h3">Línea 1: empieza con número. Línea 2: espacio en el nombre. Línea 3: Python distingue mayúsculas/minúsculas.</div>
+    <textarea id="e3" rows="5" placeholder="Escribe las líneas corregidas y explica cada error..."></textarea>
+    <div class="fb" id="fb3"></div>
+  </div>
+
+  <div class="ej-card">
+    <div class="ej-num">Ejercicio 4</div>
+    <h3>Predice el resultado de cada expresión (sin ejecutar)</h3>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:center">
+        <code style="font-family:var(--mono);color:var(--fn)">print(10 + 3 * 2)</code>
+        <input type="text" id="e4a" placeholder="Resultado...">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:center">
+        <code style="font-family:var(--mono);color:var(--fn)">print(2 ** 4)</code>
+        <input type="text" id="e4b" placeholder="Resultado...">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:center">
+        <code style="font-family:var(--mono);color:var(--fn)">print(17 % 5)</code>
+        <input type="text" id="e4c" placeholder="Resultado...">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:center">
+        <code style="font-family:var(--mono);color:var(--fn)">print(True and False)</code>
+        <input type="text" id="e4d" placeholder="Resultado...">
+      </div>
+    </div>
+    <div class="brow"><button class="btn btn-g" onclick="checkE4()">Verificar</button></div>
+    <div class="fb" id="fb4"></div>
+  </div>
+
+  <div class="ej-card" style="border-color:var(--accent)">
+    <div class="ej-num">Ejercicio 5 — Reflexión personal</div>
+    <h3>¿Para qué te serviría saber programar en tu vida?</h3>
+    <p>Escribe al menos 3 oraciones con un ejemplo concreto de tu contexto: tu municipio, tu familia, tu proyecto de vida. <strong style="color:var(--warn)">Esta respuesta es la más vigilada — debe ser 100% tuya.</strong></p>
+    <textarea id="e5" rows="5" placeholder="Escribe tu reflexión personal aquí..."></textarea>
+    <div class="fb" id="fb5"></div>
+  </div>
+
+  <div class="brow">
+    <button class="btn btn-g" onclick="goTo(1)">← Volver a leer</button>
+    <button class="btn btn-p" onclick="checkAllEj()">Revisar y continuar al quiz →</button>
+  </div>
+</div>
+
+<!-- ═══ PASO 3 — QUIZ ═══ -->
+<div class="page" id="p3">
+  <p class="slabel">Paso 3 de 4 — Quiz</p>
+  <h1 class="stitle">Demuestra lo que aprendiste</h1>
+  <p class="sbody">8 preguntas. Una sola oportunidad por pregunta. Lee con calma antes de responder — no se puede cambiar la respuesta.</p>
+  <div id="quizCont"></div>
+  <div class="brow" id="quizEnd" style="display:none">
+    <button class="btn btn-p" onclick="goTo(4)">Ver resultados y descargar →</button>
+  </div>
+</div>
+
+<!-- ═══ PASO 4 — ENTREGA ═══ -->
+<div class="page" id="p4">
+  <p class="slabel">Paso 4 de 4 — Entrega</p>
+  <h1 class="stitle">Descarga y envía tu actividad</h1>
+  <p class="sbody">Llena tus datos, descarga el archivo <code style="font-family:var(--mono);color:var(--fn)">.html</code> con todas tus respuestas y envíaselo al docente por el medio indicado.</p>
+
+  <div class="anti-ia">
+    <h4>⚠️ Advertencia de autenticidad — Validación de respuestas</h4>
+    <ul>
+      <li>Las respuestas abiertas serán <strong>revisadas manualmente</strong> por el docente.</li>
+      <li>Se aplicará herramienta de <strong>detección de IA</strong> (GPTZero, Copyleaks) a las reflexiones.</li>
+      <li>Respuestas idénticas entre compañeros o escritas con IA: <strong>nota 1.0 automática</strong>.</li>
+      <li>Una respuesta corta y genuina vale más que una larga generada por IA.</li>
+      <li>El archivo lleva un <strong>código de sesión único</strong> — no puede modificarse sin dejar rastro.</li>
+    </ul>
+  </div>
+
+  <div class="info-box">
+    <h3>📋 Datos del estudiante</h3>
+    <p>Estos datos quedarán registrados dentro del archivo.</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+      <div class="campo" style="grid-column:1/-1">
+        <label>Nombre completo <span>*</span></label>
+        <input type="text" id="d_nom" placeholder="Ej: Juan Camilo Pérez Rodríguez">
+      </div>
+      <div class="campo">
+        <label>Grado <span>*</span></label>
+        <select id="d_grd">
+          <option value="">Seleccionar...</option>
+          <option>11°A</option><option>11°B</option><option>11°C</option><option>11°D</option>
+        </select>
+      </div>
+      <div class="campo">
+        <label>Fecha de entrega</label>
+        <input type="text" id="d_fch" readonly style="color:var(--fg2)">
+      </div>
+    </div>
+  </div>
+
+  <div id="resCont"></div>
+
+  <div class="brow">
+    <button class="btn btn-p btn-dl" onclick="descargar()">⬇ Descargar mi actividad (.html)</button>
+    <button class="btn btn-g" onclick="goTo(3)">← Volver al quiz</button>
+  </div>
+  <p style="color:var(--fg3);font-size:12px;margin-top:20px;font-family:var(--mono)">
+    Docente: Kevin Daniel Castillo Gómez · I.E. John F. Kennedy · San Juanito, Meta · Tecnología 11° · Periodo 4 · 2026
+  </p>
+</div>
+
+</main>
+
+<script>
+// ── estado ──────────────────────────────────────────────────
+const S={reads:0,qscore:0,qtotal:8,quiz:{},e2ok:0,e4ok:0};
+
+// ── navegación ───────────────────────────────────────────────
+function goTo(n){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('p'+n).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+  for(let i=1;i<=4;i++){
+    const d=document.getElementById('sd'+i);
+    const l=document.getElementById('sl'+i);
+    d.className='step-dot'+(i<n?' done':i===n?' active':'');
+    if(l)l.className='step-line'+(i<n?' done':'');
+  }
+  if(n===4)buildRes();
+}
+
+// ── lectura ──────────────────────────────────────────────────
+function openSec(n){
+  const rb=document.getElementById('rb'+n);
+  const rt=document.getElementById('rt'+n);
+  const open=rb.style.display==='block';
+  rb.style.display=open?'none':'block';
+  rt.textContent=open?'▸':'▾';
+}
+
+function markRead(n){
+  const rb=document.getElementById('rb'+n);
+  rb.style.display='none';
+  document.getElementById('rt'+n).textContent='▸';
+  const sec=document.getElementById('rs'+n);
+  sec.style.borderColor='var(--good)';
+  sec.querySelector('.read-header').style.background='#052e16';
+  S.reads++;
+  document.getElementById('rdBar').style.width=(S.reads/3*100)+'%';
+  document.getElementById('rdPct').textContent=S.reads+' / 3';
+  if(n<3){
+    const next=document.getElementById('rs'+(n+1));
+    next.style.opacity='1';next.style.pointerEvents='';
+    const nrb=document.getElementById('rb'+(n+1));
+    nrb.style.display='block';
+    document.getElementById('rt'+(n+1)).textContent='▾';
+  }
+  if(S.reads===3)document.getElementById('p1btn').style.display='flex';
+}
+
+function toggleH(id){document.getElementById(id).classList.toggle('show')}
+
+// ── ejercicio 2 ──────────────────────────────────────────────
+function checkE2(){
+  const c={a:'str',b:'float',c:'int',d:'bool',e:'list'};
+  let ok=0;
+  ['a','b','c','d','e'].forEach(k=>{if(document.getElementById('e2'+k).value===c[k])ok++;});
+  S.e2ok=ok;
+  const fb=document.getElementById('fb2');
+  fb.className='fb show '+(ok===5?'ok':ok>=3?'tip':'no');
+  fb.innerHTML=ok===5?'✓ ¡Perfecto! Los 5 tipos son correctos.':'Tienes '+ok+'/5. Revisa los que fallaron y vuelve a intentarlo.';
+}
+
+// ── ejercicio 4 ──────────────────────────────────────────────
+function checkE4(){
+  const c={a:'16',b:'16',c:'2',d:'False'};
+  let ok=0;
+  ['a','b','c','d'].forEach(k=>{
+    const v=(document.getElementById('e4'+k).value||'').trim();
+    if(v===c[k])ok++;
+  });
+  S.e4ok=ok;
+  const fb=document.getElementById('fb4');
+  fb.className='fb show '+(ok===4?'ok':ok>=2?'tip':'no');
+  fb.innerHTML=ok===4?'✓ ¡Exacto! Los 4 resultados son correctos. Python respeta PEMDAS.':'Tienes '+ok+'/4. Recuerda: <strong>2**4=16</strong>, <strong>17%5=2</strong>, <strong>True and False=False</strong>.';
+}
+
+// ── validar todos los ejercicios ─────────────────────────────
+function checkAllEj(){
+  const e1=(document.getElementById('e1').value||'').trim();
+  const e3=(document.getElementById('e3').value||'').trim();
+  const e5=(document.getElementById('e5').value||'').trim();
+  let issues=[];
+  if(e1.split(/\s+/).length<10)issues.push('Ej. 1: muy corto — escribe al menos 2 oraciones completas.');
+  if(S.e2ok===0){checkE2();}
+  if(e3.split(/\s+/).length<8)issues.push('Ej. 3: explica cada corrección con palabras, no solo el código.');
+  if(S.e4ok===0){checkE4();}
+  if(e5.split(/\s+/).length<15)issues.push('Ej. 5: es la reflexión más importante — escribe al menos 3 oraciones con tu contexto real.');
+  if(issues.length){
+    alert('Revisa antes de continuar:\n\n• '+issues.join('\n• '));
+    return;
+  }
+  goTo(3);
+}
+
+// ── quiz ─────────────────────────────────────────────────────
+const QD=[
+  {q:'¿Cuál de los 4 pilares del pensamiento computacional consiste en dividir un problema grande en partes pequeñas?',
+   opts:['Abstracción','Descomposición','Patrones','Algoritmo'],ans:1,
+   fb:'La <strong>descomposición</strong> divide el problema en subproblemas manejables.'},
+  {q:'¿Qué tipo de dato tiene la variable <code>nota = 4.5</code>?',
+   opts:['int','str','float','bool'],ans:2,
+   fb:'4.5 tiene punto decimal → <strong>float</strong>. Un int no tiene decimales.'},
+  {q:'¿Cuál nombre de variable es INVÁLIDO en Python?',
+   opts:['mi_nota','promedioFinal','1nota','_resultado'],ans:2,
+   fb:'Los nombres no pueden empezar con número. <strong>1nota</strong> produce SyntaxError.'},
+  {q:'Si <code>x = 17</code>, ¿qué devuelve <code>x % 5</code>?',
+   opts:['3','2','5','1'],ans:1,
+   fb:'17 ÷ 5 = 3 con residuo <strong>2</strong>. El operador % devuelve ese residuo.'},
+  {q:'¿Qué imprime <code>print(2 ** 4)</code>?',
+   opts:['8','16','24','4'],ans:1,
+   fb:'El operador ** es potencia: 2×2×2×2 = <strong>16</strong>.'},
+  {q:'¿Cuál expresión convierte el texto "3.8" a número decimal?',
+   opts:['int("3.8")','float("3.8")','str(3.8)','bool("3.8")'],ans:1,
+   fb:'<strong>float()</strong> convierte a decimal. int() daría error porque "3.8" tiene punto.'},
+  {q:'¿Qué valor tiene <code>True and False</code>?',
+   opts:['True','False','1','None'],ans:1,
+   fb:'<strong>and</strong> devuelve True solo si AMBOS son True. Aquí uno es False → resultado <strong>False</strong>.'},
+  {q:'¿Cuál tipo de dato almacena una colección de varios elementos?',
+   opts:['str','bool','float','list'],ans:3,
+   fb:'Una <strong>list</strong> guarda múltiples valores: materias=["Mat","Tec","Esp"].'},
+];
+
+let qDone=0;
+function buildQuiz(){
+  const c=document.getElementById('quizCont');c.innerHTML='';
+  qDone=0;S.qscore=0;S.qtotal=QD.length;
+  QD.forEach((q,qi)=>{
+    const card=document.createElement('div');card.className='qcard';card.id='qq'+qi;
+    const L=['A','B','C','D'];
+    card.innerHTML=`<div class="qnum">Pregunta ${qi+1} de ${QD.length}</div>
+      <div class="qtxt">${q.q}</div>
+      <div class="opts">${q.opts.map((o,oi)=>`<div class="opt" data-qi="${qi}" data-oi="${oi}" onclick="ansQ(this)"><span class="ol">${L[oi]}</span><span>${o}</span></div>`).join('')}</div>
+      <div class="qfb" id="qfb${qi}"></div>`;
+    c.appendChild(card);
+  });
+}
+function ansQ(el){
+  const qi=+el.dataset.qi,oi=+el.dataset.oi;
+  const card=document.getElementById('qq'+qi);
+  if(card.dataset.done)return;
+  card.dataset.done='1';
+  card.querySelectorAll('.opt').forEach(o=>o.style.pointerEvents='none');
+  const fb=document.getElementById('qfb'+qi);
+  if(oi===QD[qi].ans){
+    el.classList.add('correct');
+    fb.className='qfb show ok';
+    fb.innerHTML='✓ Correcto. '+QD[qi].fb;
+    S.qscore++;
+  }else{
+    el.classList.add('wrong');
+    card.querySelectorAll('.opt')[QD[qi].ans].classList.add('correct');
+    fb.className='qfb show no';
+    fb.innerHTML='✗ Incorrecto. '+QD[qi].fb;
+  }
+  S.quiz[qi]={chosen:oi,correct:QD[qi].ans,ok:oi===QD[qi].ans};
+  qDone++;
+  if(qDone===QD.length)setTimeout(()=>document.getElementById('quizEnd').style.display='flex',400);
+}
+buildQuiz();
+
+// ── resumen ───────────────────────────────────────────────────
+function buildRes(){
+  const now=new Date();
+  document.getElementById('d_fch').value=now.toLocaleDateString('es-CO',{year:'numeric',month:'long',day:'numeric',hour:'2-digit',minute:'2-digit'});
+  const sc=S.qscore,tt=S.qtotal,pct=Math.round(sc/tt*100);
+  const e1v=(document.getElementById('e1').value||'').trim();
+  const e3v=(document.getElementById('e3').value||'').trim();
+  const e5v=(document.getElementById('e5').value||'').trim();
+  document.getElementById('resCont').innerHTML=`
+    <div class="score-hero">
+      <div class="score-num">${sc}/${tt}</div>
+      <div class="score-sub">Quiz — ${pct}% · ${pct>=80?'✅ Aprobado':'⚠️ Necesita repaso'}</div>
+    </div>
+    <div class="resumen-c"><h4>// ejercicios escritos</h4>
+    <pre>EJ1:\n${e1v||'(sin respuesta)'}\n\nEJ3:\n${e3v||'(sin respuesta)'}\n\nEJ5:\n${e5v||'(sin respuesta)'}</pre></div>
+    <div class="resumen-c"><h4>// quiz</h4>
+    <pre>${QD.map((q,i)=>{const r=S.quiz[i];return`P${i+1}: ${r?r.ok?'✓':'✗':'?'} ${r?'"'+q.opts[r.chosen]+'"':'-'} → "${q.opts[q.ans]}"`}).join('\n')}</pre></div>`;
+}
+
+// ── descargar ─────────────────────────────────────────────────
+let _dlCap=null;
+(async()=>{_dlCap=await claude.use('downloads');
+  if(!_dlCap)document.querySelectorAll('.btn-dl').forEach(b=>{b.textContent='⬇ Descarga no disponible en esta vista';b.disabled=true;});
+})();
+
+async function descargar(){
+  const nom=(document.getElementById('d_nom').value||'').trim();
+  const grd=(document.getElementById('d_grd').value||'').trim();
+  if(!nom||!grd){alert('⚠️ Completa tu nombre y grado antes de descargar.');return;}
+  const now=new Date();
+  const fStr=now.toLocaleString('es-CO',{year:'numeric',month:'long',day:'numeric',hour:'2-digit',minute:'2-digit'});
+  let h=0;const hb=nom+grd+now.toISOString().slice(0,16);
+  for(let i=0;i<hb.length;i++){h=((h<<5)-h)+hb.charCodeAt(i);h|=0;}
+  const hCode='JFK-'+Math.abs(h).toString(16).toUpperCase().slice(0,8);
+  const sc=S.qscore,tt=S.qtotal,pct=Math.round(sc/tt*100);
+  const g=id=>document.getElementById(id);
+  const e1v=g('e1').value||'(sin respuesta)';
+  const e3v=g('e3').value||'(sin respuesta)';
+  const e5v=g('e5').value||'(sin respuesta)';
+  const qRows=QD.map((q,i)=>{
+    const r=S.quiz[i];const ok=r&&r.ok;
+    return`<tr>
+      <td style="font-family:monospace;padding:7px 10px;border-bottom:1px solid #e2e8f0;color:#475569">P${i+1}</td>
+      <td style="padding:7px 10px;border-bottom:1px solid #e2e8f0;font-size:13px">${q.q.replace(/<[^>]*>/g,'')}</td>
+      <td style="padding:7px 10px;border-bottom:1px solid #e2e8f0;font-size:13px;color:${ok?'#16a34a':'#dc2626'}">${r?q.opts[r.chosen]:'sin responder'}</td>
+      <td style="padding:7px 10px;border-bottom:1px solid #e2e8f0;font-size:13px;color:#16a34a">${q.opts[q.ans]}</td>
+      <td style="text-align:center;padding:7px 10px;border-bottom:1px solid #e2e8f0;font-size:15px">${ok?'✅':'❌'}</td>
+    </tr>`;
+  }).join('');
+  const scoreBorder=pct>=80?'#16a34a':'#dc2626';
+  const html=`<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Actividad Python — ${nom}</title>
+<style>
+body{font-family:'Segoe UI',Arial,sans-serif;max-width:820px;margin:0 auto;padding:32px 20px;color:#1e293b;background:#f8faff}
+h1{font-size:22px;color:#1e3a5f;margin-bottom:4px}
+h2{font-size:15px;color:#1e3a5f;margin-top:28px;margin-bottom:10px;border-bottom:2px solid #e2e8f0;padding-bottom:6px}
+.meta{background:#1e3a5f;color:#fff;border-radius:8px;padding:18px 24px;margin-bottom:24px}
+.meta table{width:100%;border-collapse:collapse}
+.meta td{padding:5px 12px;font-size:14px}
+.meta td:first-child{color:#94a3b8;font-size:12px;width:150px}
+.hash{font-family:monospace;background:#0f172a;color:#64ffda;padding:5px 12px;border-radius:4px;font-size:13px;display:inline-block;margin-top:6px}
+.score-box{text-align:center;background:#fff;border:2px solid ${scoreBorder};border-radius:8px;padding:20px;margin-bottom:20px}
+.score-big{font-size:52px;font-weight:700;color:${scoreBorder};line-height:1}
+.score-sub{color:#64748b;margin-top:8px;font-size:14px}
+.resp{background:#fff;border:1px solid #e2e8f0;border-radius:6px;padding:14px 18px;font-size:14px;line-height:1.8;color:#334155;white-space:pre-wrap;word-break:break-word;margin-bottom:4px}
+table.qt{width:100%;border-collapse:collapse}
+table.qt th{background:#1e3a5f;color:#fff;padding:8px 10px;text-align:left;font-size:13px}
+.alerta{background:#fff8e1;border:1px solid #f59e0b;border-radius:8px;padding:16px 20px;margin-top:28px;font-size:13px;color:#7c5700;line-height:1.7}
+.alerta strong{display:block;font-size:14px;margin-bottom:6px}
+p.lbl{font-weight:600;font-size:14px;margin:18px 0 6px;color:#1e3a5f}
+</style></head><body>
+<h1>Actividad Python — Tecnología e Informática 11°</h1>
+<p style="color:#64748b;font-size:13px;margin-bottom:18px">I.E. John F. Kennedy · San Juanito, Meta · Periodo 4 · 2026</p>
+<div class="meta"><table>
+  <tr><td>Estudiante</td><td><strong>${nom}</strong></td></tr>
+  <tr><td>Grado</td><td>${grd}</td></tr>
+  <tr><td>Docente</td><td>Kevin Daniel Castillo Gómez</td></tr>
+  <tr><td>Fecha de entrega</td><td>${fStr}</td></tr>
+  <tr><td>Código de sesión</td><td><span class="hash">${hCode}</span></td></tr>
+</table></div>
+<div class="score-box">
+  <div class="score-big">${sc}/${tt}</div>
+  <div class="score-sub">${pct}% en el quiz &nbsp;·&nbsp; ${pct>=80?'✅ Aprobado (Superior/Alto)':'⚠️ Requiere repaso (Básico/Bajo)'}</div>
+</div>
+<h2>Ejercicios escritos</h2>
+<p class="lbl">Ejercicio 1 — Pensamiento computacional (propias palabras)</p><div class="resp">${e1v}</div>
+<p class="lbl">Ejercicio 2 — Tipos de datos</p>
+<div class="resp">ciudad="Bogotá" → ${g('e2a').value||'—'}
+temperatura=36.6 → ${g('e2b').value||'—'}
+alumnos=30 → ${g('e2c').value||'—'}
+aprobado=False → ${g('e2d').value||'—'}
+notas=[4.5,3.8,4.2] → ${g('e2e').value||'—'}</div>
+<p class="lbl">Ejercicio 3 — Corrección de errores</p><div class="resp">${e3v}</div>
+<p class="lbl">Ejercicio 4 — Predicción de resultados</p>
+<div class="resp">print(10+3*2) → ${g('e4a')?g('e4a').value||'—':'—'}
+print(2**4) → ${g('e4b')?g('e4b').value||'—':'—'}
+print(17%5) → ${g('e4c')?g('e4c').value||'—':'—'}
+print(True and False) → ${g('e4d')?g('e4d').value||'—':'—'}</div>
+<p class="lbl">Ejercicio 5 — Reflexión personal</p><div class="resp">${e5v}</div>
+<h2>Resultados del quiz (${sc}/${tt} — ${pct}%)</h2>
+<table class="qt"><thead><tr><th>#</th><th>Pregunta</th><th>Tu respuesta</th><th>Respuesta correcta</th><th>✓/✗</th></tr></thead>
+<tbody>${qRows}</tbody></table>
+<div class="alerta"><strong>⚠️ Registro de autenticidad</strong>
+Actividad generada el ${fStr} · Código: ${hCode}<br>
+Las respuestas abiertas serán verificadas con herramientas de detección de IA (GPTZero, Copyleaks).<br>
+Respuestas generadas con IA o copiadas de internet: <strong>nota 1.0</strong>.</div>
+</body></html>`;
+
+  if(!_dlCap){alert('La descarga no está disponible en esta vista. Abre la actividad en claude.ai para descargar.');return;}
+  const filename='actividad_python_'+nom.replace(/\s+/g,'_').toLowerCase().slice(0,20)+'_'+grd.replace('°','')+'.html';
+  try{
+    await _dlCap.save({filename,data:html});
+  }catch(err){
+    if(err&&err.code==='declined'){alert('Descarga cancelada. Pulsa el botón nuevamente cuando quieras guardar.');}
+    else{alert('No se pudo descargar: '+(err&&err.message||err)+'. Intenta de nuevo.');}
+  }
+}
+
+// init — abrir primera sección
+document.getElementById('rb1').style.display='block';
+document.getElementById('rt1').textContent='▾';
+</script>
+
+</body></html>
